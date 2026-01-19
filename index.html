@@ -1,1 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Brain Challenge Pro - Firebase Version</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== BASE STYLES ===== */
+        :root {
+            --primary: #7B68EE;
+            --secondary: #00D4FF;
+            --accent: #FF6B8B;
+            --success: #00FF9D;
+            --warning: #FFD166;
+            --background: #0F0F23;
+            --glass: rgba(255, 255, 255, 0.05);
+            --safe-area-inset-top: env(safe-area-inset-top, 0px);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--background);
+            color: white;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .app-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        /* ===== HEADER ===== */
+        .mobile-header {
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            height: 60px;
+            flex-shrink: 0;
+            padding-top: max(12px, var(--safe-area-inset-top));
+        }
+        
+        .logo-mobile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+        
+        /* ===== AUTH SCREEN ===== */
+        .auth-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--background);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 9999;
+        }
+        
+        .auth-content {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .auth-logo {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+        
+        .auth-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .auth-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .auth-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .auth-btn.google {
+            background: white;
+            color: #333;
+        }
+        
+        .auth-btn.anonymous {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .auth-footer {
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+        
+        /* ===== CONTENT AREA ===== */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 16px;
+            padding-bottom: 80px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .mobile-page {
+            display: none;
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        .mobile-page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        /* ===== HOME PAGE ===== */
+        .hero-mobile {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-top: 10px;
+        }
+        
+        .hero-mobile h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* ===== ACTION CARDS ===== */
+        .action-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .action-card {
+            background: var(--glass);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+            min-height: 70px;
+        }
+        
+        .action-card:active {
+            transform: scale(0.98);
+        }
+        
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        
+        /* ===== STATS GRID ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-box {
+            background: var(--glass);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* ===== BUTTONS ===== */
+        .btn {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        /* ===== ROOM PAGE ===== */
+        .room-code-display {
+            background: rgba(123, 104, 238, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            font-family: monospace;
+            letter-spacing: 3px;
+            text-align: center;
+            font-size: 1.4rem;
+            margin: 16px 0;
+            font-weight: 700;
+        }
+        
+        .players-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .player-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* ===== GAME PAGE ===== */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .game-timer {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin: 16px 0;
+        }
+        
+        .question-card {
+            background: var(--glass);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .option-card {
+            background: var(--glass);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 12px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+            padding-bottom: max(12px, var(--safe-area-inset-bottom));
+        }
+        
+        .nav-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        
+        .nav-btn.active {
+            background: rgba(123, 104, 238, 0.2);
+            color: var(--secondary);
+        }
+        
+        /* ===== UTILITIES ===== */
+        .hidden {
+            display: none !important;
+        }
+        
+        .scrollable::-webkit-scrollbar {
+            display: none;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Screen -->
+    <div class="auth-screen" id="authScreen">
+        <div class="auth-content">
+            <div class="auth-logo">
+                <i class="fas fa-brain"></i>
+            </div>
+            <h1 class="auth-title">Brain Challenge Pro</h1>
+            <p class="auth-subtitle">Play real-time multiplayer brain games</p>
+            
+            <button class="auth-btn google" onclick="signInWithGoogle()">
+                <i class="fab fa-google"></i>
+                Continue with Google
+            </button>
+            
+            <button class="auth-btn anonymous" onclick="signInAnonymously()">
+                <i class="fas fa-user-secret"></i>
+                Play as Guest
+            </button>
+            
+            <p class="auth-footer">Sign in to save your progress</p>
+        </div>
+    </div>
+    
+    <!-- Main App -->
+    <div class="app-container" id="appContainer" style="display: none;">
+        <!-- Header -->
+        <header class="mobile-header">
+            <div class="logo-mobile" onclick="goToPage('home')">
+                <i class="fas fa-brain"></i>
+                <span id="userDisplayName">BrainPro</span>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Content Area -->
+        <div class="content-area scrollable" id="contentArea">
+            
+            <!-- Home Page -->
+            <div class="mobile-page active" id="homePage">
+                <div class="hero-mobile">
+                    <h1 id="welcomeText">Welcome!</h1>
+                    <p>Challenge friends in real-time</p>
+                </div>
+                
+                <div class="action-cards">
+                    <div class="action-card" onclick="goToPage('singleplayer')">
+                        <div class="action-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="action-content">
+                            <div class="action-title">Single Player</div>
+                            <div class="action-desc">Practice solo</div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card" onclick="goToPage('multiplayer')">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #FF6B8B, #FF8E53);">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="action-content">
+                            <div class="action-title">Multiplayer</div>
+                            <div class="action-desc">Play with friends</div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card" onclick="goToPage('friends')">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #00D4A3, #00FF9D);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="action-content">
+                            <div class="action-title">Friends</div>
+                            <div class="action-desc">Add & play friends</div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card" onclick="goToPage('profile')">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #FFD166, #FF9E00);">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="action-content">
+                            <div class="action-title">Profile</div>
+                            <div class="action-desc">View your stats</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalWins">0</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalGames">0</div>
+                        <div class="stat-label">Games</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="userRank">-</div>
+                        <div class="stat-label">Rank</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="userLevel">1</div>
+                        <div class="stat-label">Level</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Single Player Page -->
+            <div class="mobile-page" id="singleplayerPage">
+                <div class="page-header">
+                    <button class="back-btn" onclick="goToPage('home')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Single Player</h2>
+                </div>
+                
+                <div class="action-cards">
+                    <div class="action-card" onclick="startSinglePlayer('easy')">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #00FF9D, #00D4A3);">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <div class="action-content">
+                            <div class="action-title">Easy</div>
+                            <div class="action-desc">10 questions • 30 seconds</div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card" onclick="startSinglePlayer('medium')">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #FFD166, #FF9E00);">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <div class="action-content">
+                            <div class="action-title">Medium</div>
+                            <div class="action-desc">15 questions • 25 seconds</div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card" onclick="startSinglePlayer('hard')">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #FF6B8B, #FF8E53);">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="action-content">
+                            <div class="action-title">Hard</div>
+                            <div class="action-desc">20 questions • 20 seconds</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Multiplayer Lobby -->
+            <div class="mobile-page" id="multiplayerPage">
+                <div class="page-header">
+                    <button class="back-btn" onclick="goToPage('home')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Multiplayer</h2>
+                </div>
+                
+                <button class="btn" onclick="createRoom()" style="margin-bottom: 16px;">
+                    <i class="fas fa-plus"></i>
+                    Create Room
+                </button>
+                
+                <input type="text" id="roomCodeInput" placeholder="Enter room code" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; color: white; margin-bottom: 16px;">
+                
+                <button class="btn" onclick="joinRoom()">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Join Room
+                </button>
+                
+                <div id="activeRooms" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 10px;">Active Rooms</h3>
+                    <div id="roomsList"></div>
+                </div>
+            </div>
+            
+            <!-- Room Page -->
+            <div class="mobile-page" id="roomPage">
+                <div class="page-header">
+                    <button class="back-btn" onclick="leaveRoom()">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2 id="roomTitle">Room</h2>
+                </div>
+                
+                <div class="room-code-display" id="roomCodeDisplay">ABCD</div>
+                <p style="text-align: center; color: rgba(255,255,255,0.7); margin-bottom: 20px;">
+                    Share this code with friends
+                </p>
+                
+                <div class="players-list" id="playersList">
+                    <!-- Players will be added here -->
+                </div>
+                
+                <button class="btn" onclick="startGame()" id="startBtn" style="display: none;">
+                    <i class="fas fa-play"></i>
+                    Start Game
+                </button>
+                
+                <div id="waitingMessage" style="text-align: center; color: var(--warning); padding: 20px;">
+                    Waiting for host to start the game...
+                </div>
+            </div>
+            
+            <!-- Game Page -->
+            <div class="mobile-page" id="gamePage">
+                <div class="game-header">
+                    <div style="font-weight: 600;" id="player1Name">You</div>
+                    <div class="score-display">
+                        <div style="font-size: 1.8rem; font-weight: 800;" id="player1Score">0</div>
+                        <div style="font-size: 1.5rem; margin: 0 10px;">:</div>
+                        <div style="font-size: 1.8rem; font-weight: 800;" id="player2Score">0</div>
+                    </div>
+                    <div style="font-weight: 600;" id="player2Name">Opponent</div>
+                </div>
+                
+                <div class="game-timer" id="gameTimer">30</div>
+                
+                <div class="question-card">
+                    <div class="question-text" id="questionText">
+                        Loading question...
+                    </div>
+                </div>
+                
+                <div class="options-grid" id="optionsGrid">
+                    <!-- Options will be added here -->
+                </div>
+                
+                <div id="feedback" style="text-align: center; padding: 20px; font-weight: 600;"></div>
+            </div>
+            
+            <!-- Friends Page -->
+            <div class="mobile-page" id="friendsPage">
+                <div class="page-header">
+                    <button class="back-btn" onclick="goToPage('home')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Friends</h2>
+                </div>
+                
+                <input type="text" id="friendSearch" placeholder="Search friends by username" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; color: white; margin-bottom: 16px;">
+                
+                <div id="friendsList">
+                    <div class="player-item">
+                        <div>👤</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600;">John</div>
+                            <div style="font-size: 0.9rem; color: var(--success);">Online</div>
+                        </div>
+                        <button style="padding: 8px 16px; background: var(--primary); border: none; border-radius: 8px; color: white;">Challenge</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Page -->
+            <div class="mobile-page" id="profilePage">
+                <div class="page-header">
+                    <button class="back-btn" onclick="goToPage('home')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Profile</h2>
+                </div>
+                
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 10px;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div style="font-size: 1.3rem; font-weight: 600;" id="profileName">User</div>
+                    <div style="color: rgba(255,255,255,0.7);" id="profileEmail">email@example.com</div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value" id="profileWins">0</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="profileLosses">0</div>
+                        <div class="stat-label">Losses</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="profileWinRate">0%</div>
+                        <div class="stat-label">Win Rate</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="profileXP">0</div>
+                        <div class="stat-label">XP</div>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="logout()" style="margin-top: 20px; background: var(--accent);">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+            
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" onclick="goToPage('home')">
+                <i class="fas fa-home"></i>
+                <span style="font-size: 0.7rem;">Home</span>
+            </button>
+            <button class="nav-btn" onclick="goToPage('multiplayer')">
+                <i class="fas fa-gamepad"></i>
+                <span style="font-size: 0.7rem;">Play</span>
+            </button>
+            <button class="nav-btn" onclick="goToPage('friends')">
+                <i class="fas fa-users"></i>
+                <span style="font-size: 0.7rem;">Friends</span>
+            </button>
+            <button class="nav-btn" onclick="goToPage('profile')">
+                <i class="fas fa-user"></i>
+                <span style="font-size: 0.7rem;">Profile</span>
+            </button>
+        </nav>
+    </div>
 
+    <!-- Firebase & Game Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithPopup, 
+            GoogleAuthProvider, 
+            signInAnonymously,
+            onAuthStateChanged,
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+        import { 
+            getDatabase, 
+            ref, 
+            set, 
+            get, 
+            push, 
+            onValue, 
+            update,
+            remove,
+            onChildAdded,
+            onChildChanged,
+            onChildRemoved 
+        } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDNPPyl0AJiD6T78bnYOtBgwD_T_o5lMvM",
+            authDomain: "mind-test-game.firebaseapp.com",
+            databaseURL: "https://mind-test-game-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "mind-test-game",
+            storageBucket: "mind-test-game.firebasestorage.app",
+            messagingSenderId: "1043047119163",
+            appId: "1:1043047119163:web:3b6e836b38481467a81f1e",
+            measurementId: "G-Z2XY3W4R66"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+        const provider = new GoogleAuthProvider();
+
+        // Game State
+        const gameState = {
+            user: null,
+            currentRoom: null,
+            currentGame: null,
+            isHost: false,
+            questions: [],
+            currentQuestion: 0,
+            score: 0,
+            opponentScore: 0,
+            timer: null
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    gameState.user = user;
+                    showApp();
+                    loadUserData();
+                    updateActiveRooms();
+                } else {
+                    showAuth();
+                }
+            });
+        });
+
+        // Auth Functions
+        async function signInWithGoogle() {
+            try {
+                const result = await signInWithPopup(auth, provider);
+                console.log("Google sign-in successful:", result.user);
+            } catch (error) {
+                console.error("Google sign-in error:", error);
+                alert("Sign-in failed: " + error.message);
+            }
+        }
+
+        async function signInAnonymously() {
+            try {
+                await signInAnonymously(auth);
+            } catch (error) {
+                console.error("Anonymous sign-in error:", error);
+                alert("Sign-in failed: " + error.message);
+            }
+        }
+
+        async function logout() {
+            try {
+                if (gameState.currentRoom) {
+                    await leaveRoom();
+                }
+                await signOut(auth);
+            } catch (error) {
+                console.error("Logout error:", error);
+            }
+        }
+
+        // UI Functions
+        function showAuth() {
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('appContainer').style.display = 'none';
+        }
+
+        function showApp() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'flex';
+            updateUserDisplay();
+        }
+
+        function updateUserDisplay() {
+            if (gameState.user) {
+                const displayName = gameState.user.displayName || 
+                                   gameState.user.email?.split('@')[0] || 
+                                   'Guest' + Math.floor(Math.random() * 1000);
+                document.getElementById('userDisplayName').textContent = displayName;
+                document.getElementById('welcomeText').textContent = `Welcome, ${displayName}!`;
+                document.getElementById('profileName').textContent = displayName;
+                document.getElementById('profileEmail').textContent = gameState.user.email || 'Guest User';
+            }
+        }
+
+        // Page Navigation
+        function goToPage(page) {
+            // Hide all pages
+            document.querySelectorAll('.mobile-page').forEach(p => p.classList.remove('active'));
+            
+            // Show target page
+            document.getElementById(page + 'Page').classList.add('active');
+            
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            if (page === 'home') {
+                document.querySelector('.nav-btn:nth-child(1)').classList.add('active');
+            }
+            
+            // Scroll to top
+            document.getElementById('contentArea').scrollTop = 0;
+        }
+
+        // Load User Data from Firebase
+        async function loadUserData() {
+            if (!gameState.user) return;
+            
+            const userRef = ref(database, 'users/' + gameState.user.uid);
+            onValue(userRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    // Update stats on home page
+                    document.getElementById('totalWins').textContent = data.wins || 0;
+                    document.getElementById('totalGames').textContent = (data.wins || 0) + (data.losses || 0);
+                    document.getElementById('userRank').textContent = data.rank || 'Bronze';
+                    document.getElementById('userLevel').textContent = data.level || 1;
+                    
+                    // Update profile page
+                    document.getElementById('profileWins').textContent = data.wins || 0;
+                    document.getElementById('profileLosses').textContent = data.losses || 0;
+                    
+                    const totalGames = (data.wins || 0) + (data.losses || 0);
+                    const winRate = totalGames > 0 ? Math.round((data.wins / totalGames) * 100) : 0;
+                    document.getElementById('profileWinRate').textContent = winRate + '%';
+                    document.getElementById('profileXP').textContent = data.xp || 0;
+                } else {
+                    // Create user data if doesn't exist
+                    set(userRef, {
+                        name: gameState.user.displayName || 'Guest',
+                        email: gameState.user.email || '',
+                        wins: 0,
+                        losses: 0,
+                        draws: 0,
+                        xp: 0,
+                        level: 1,
+                        rank: 'Bronze',
+                        createdAt: Date.now()
+                    });
+                }
+            });
+        }
+
+        // Multiplayer Room Functions
+        async function createRoom() {
+            const roomCode = generateRoomCode();
+            gameState.currentRoom = roomCode;
+            gameState.isHost = true;
+            
+            const roomRef = ref(database, 'rooms/' + roomCode);
+            await set(roomRef, {
+                code: roomCode,
+                host: gameState.user.uid,
+                players: {
+                    [gameState.user.uid]: {
+                        name: gameState.user.displayName || 'Guest',
+                        uid: gameState.user.uid,
+                        score: 0,
+                        ready: false
+                    }
+                },
+                status: 'waiting',
+                settings: {
+                    difficulty: 'medium',
+                    questionCount: 10,
+                    timePerQuestion: 30
+                },
+                createdAt: Date.now()
+            });
+            
+            // Join the room
+            await joinRoomListener(roomCode);
+            goToPage('room');
+            document.getElementById('roomCodeDisplay').textContent = roomCode;
+            document.getElementById('roomTitle').textContent = `${gameState.user.displayName || 'Guest'}'s Room`;
+            document.getElementById('startBtn').style.display = 'block';
+            document.getElementById('waitingMessage').style.display = 'none';
+        }
+
+        function generateRoomCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        async function joinRoom() {
+            const roomCode = document.getElementById('roomCodeInput').value.trim().toUpperCase();
+            if (!roomCode || roomCode.length !== 6) {
+                alert('Please enter a valid 6-character room code');
+                return;
+            }
+            
+            const roomRef = ref(database, 'rooms/' + roomCode);
+            const snapshot = await get(roomRef);
+            
+            if (!snapshot.exists()) {
+                alert('Room not found');
+                return;
+            }
+            
+            const roomData = snapshot.val();
+            if (roomData.status !== 'waiting') {
+                alert('Game already in progress');
+                return;
+            }
+            
+            if (Object.keys(roomData.players).length >= 4) {
+                alert('Room is full');
+                return;
+            }
+            
+            gameState.currentRoom = roomCode;
+            gameState.isHost = false;
+            
+            // Add player to room
+            await update(ref(database, 'rooms/' + roomCode + '/players/' + gameState.user.uid), {
+                name: gameState.user.displayName || 'Guest',
+                uid: gameState.user.uid,
+                score: 0,
+                ready: false
+            });
+            
+            // Join the room
+            await joinRoomListener(roomCode);
+            goToPage('room');
+            document.getElementById('roomCodeDisplay').textContent = roomCode;
+            document.getElementById('roomTitle').textContent = `Room: ${roomCode}`;
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('waitingMessage').style.display = 'block';
+        }
+
+        async function joinRoomListener(roomCode) {
+            const roomRef = ref(database, 'rooms/' + roomCode);
+            
+            // Listen for room changes
+            onValue(roomRef, (snapshot) => {
+                const roomData = snapshot.val();
+                if (!roomData) {
+                    // Room deleted
+                    if (gameState.currentRoom === roomCode) {
+                        alert('Room has been closed');
+                        goToPage('multiplayer');
+                    }
+                    return;
+                }
+                
+                // Update players list
+                updatePlayersList(roomData.players);
+                
+                // Update room status
+                if (roomData.status === 'playing') {
+                    startGameFromRoom(roomData);
+                }
+            });
+        }
+
+        function updatePlayersList(players) {
+            const container = document.getElementById('playersList');
+            container.innerHTML = '';
+            
+            Object.values(players).forEach(player => {
+                const isCurrentUser = player.uid === gameState.user.uid;
+                const playerElement = document.createElement('div');
+                playerElement.className = 'player-item';
+                playerElement.style.background = isCurrentUser ? 'rgba(0, 212, 255, 0.1)' : '';
+                playerElement.innerHTML = `
+                    <div>👤</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">${player.name} ${isCurrentUser ? '(You)' : ''}</div>
+                        <div style="font-size: 0.9rem; color: ${player.ready ? 'var(--success)' : 'var(--warning)'};">
+                            ${player.ready ? 'Ready' : 'Waiting'}
+                        </div>
+                    </div>
+                    <div style="font-weight: 600;">${player.score || 0}</div>
+                `;
+                container.appendChild(playerElement);
+            });
+            
+            document.getElementById('playerCount').textContent = Object.keys(players).length;
+        }
+
+        async function leaveRoom() {
+            if (!gameState.currentRoom) return;
+            
+            const roomRef = ref(database, 'rooms/' + gameState.currentRoom);
+            const snapshot = await get(roomRef);
+            
+            if (snapshot.exists()) {
+                const roomData = snapshot.val();
+                
+                if (gameState.isHost) {
+                    // Host leaving - delete room
+                    await remove(roomRef);
+                } else {
+                    // Player leaving - remove from players
+                    await update(ref(database, 'rooms/' + gameState.currentRoom + '/players/' + gameState.user.uid), null);
+                    
+                    // If no players left, delete room
+                    const remainingPlayers = Object.keys(roomData.players || {}).filter(uid => uid !== gameState.user.uid);
+                    if (remainingPlayers.length === 0) {
+                        await remove(roomRef);
+                    }
+                }
+            }
+            
+            gameState.currentRoom = null;
+            gameState.isHost = false;
+            goToPage('multiplayer');
+        }
+
+        async function startGame() {
+            if (!gameState.currentRoom || !gameState.isHost) return;
+            
+            // Generate questions
+            const questions = await generateAIQuestions(10, 'medium');
+            gameState.questions = questions;
+            
+            // Update room status
+            await update(ref(database, 'rooms/' + gameState.currentRoom), {
+                status: 'playing',
+                questions: questions,
+                currentQuestion: 0,
+                startTime: Date.now()
+            });
+        }
+
+        function startGameFromRoom(roomData) {
+            gameState.currentGame = roomData;
+            gameState.questions = roomData.questions || [];
+            gameState.currentQuestion = 0;
+            gameState.score = 0;
+            gameState.opponentScore = 0;
+            
+            // Find opponent
+            const players = Object.values(roomData.players || {});
+            const opponent = players.find(p => p.uid !== gameState.user.uid);
+            
+            if (opponent) {
+                document.getElementById('player2Name').textContent = opponent.name;
+            }
+            
+            goToPage('game');
+            loadGameQuestion();
+        }
+
+        // AI Question Generation
+        async function generateAIQuestions(count, difficulty) {
+            try {
+                // DeepSeek API (replace with your API key)
+                const DEEPSEEK_API_KEY = "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";
+                
+                const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+                        'Content-Type': 'application/json',
+                        'HTTP-Referer': window.location.origin,
+                        'X-Title': 'Brain Challenge Pro'
+                    },
+                    body: JSON.stringify({
+                        model: "deepseek/deepseek-chat",
+                        messages: [{
+                            role: "user",
+                            content: `Generate ${count} multiple choice questions for ${difficulty} difficulty. Format: {"questions": [{"question": "text", "options": ["A", "B", "C", "D"], "correct": 0, "explanation": "text"}]}. Topics: Math, Science, General Knowledge, Logic.`
+                        }],
+                        temperature: 0.7,
+                        max_tokens: 2000
+                    })
+                });
+                
+                const data = await response.json();
+                console.log("AI Response:", data);
+                
+                if (data.choices && data.choices[0].message.content) {
+                    const content = data.choices[0].message.content;
+                    const jsonMatch = content.match(/\{.*\}/s);
+                    if (jsonMatch) {
+                        const parsed = JSON.parse(jsonMatch[0]);
+                        return parsed.questions || [];
+                    }
+                }
+                
+                // Fallback questions if API fails
+                return getFallbackQuestions(count);
+                
+            } catch (error) {
+                console.error("AI Question Error:", error);
+                return getFallbackQuestions(count);
+            }
+        }
+
+        function getFallbackQuestions(count) {
+            const questions = [
+                {
+                    question: "What is the capital of France?",
+                    options: ["London", "Berlin", "Paris", "Madrid"],
+                    correct: 2,
+                    explanation: "Paris is the capital of France."
+                },
+                {
+                    question: "Which planet is known as the Red Planet?",
+                    options: ["Earth", "Mars", "Jupiter", "Venus"],
+                    correct: 1,
+                    explanation: "Mars is called the Red Planet."
+                },
+                {
+                    question: "What is 15 + 27?",
+                    options: ["32", "42", "52", "62"],
+                    correct: 1,
+                    explanation: "15 + 27 = 42"
+                },
+                {
+                    question: "Which element has the chemical symbol 'O'?",
+                    options: ["Gold", "Oxygen", "Osmium", "Oganesson"],
+                    correct: 1,
+                    explanation: "O is the symbol for Oxygen."
+                },
+                {
+                    question: "Who wrote 'Romeo and Juliet'?",
+                    options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
+                    correct: 1,
+                    explanation: "William Shakespeare wrote Romeo and Juliet."
+                }
+            ];
+            
+            return questions.slice(0, count);
+        }
+
+        // Game Functions
+        function loadGameQuestion() {
+            if (gameState.currentQuestion >= gameState.questions.length) {
+                endGame();
+                return;
+            }
+            
+            const question = gameState.questions[gameState.currentQuestion];
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Update scores
+            document.getElementById('player1Score').textContent = gameState.score;
+            document.getElementById('player2Score').textContent = gameState.opponentScore;
+            
+            // Load options
+            const optionsGrid = document.getElementById('optionsGrid');
+            optionsGrid.innerHTML = '';
+            
+            const letters = ['A', 'B', 'C', 'D'];
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option-card';
+                optionElement.innerHTML = `
+                    <div style="width: 30px; height: 30px; background: rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 600;">
+                        ${letters[index]}
+                    </div>
+                    <div style="flex: 1;">${option}</div>
+                `;
+                
+                optionElement.onclick = () => selectAnswer(index);
+                optionsGrid.appendChild(optionElement);
+            });
+            
+            // Start timer
+            startQuestionTimer();
+        }
+
+        function startQuestionTimer() {
+            let timeLeft = 30;
+            document.getElementById('gameTimer').textContent = timeLeft;
+            
+            clearInterval(gameState.timer);
+            gameState.timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('gameTimer').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(gameState.timer);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        async function selectAnswer(answerIndex) {
+            clearInterval(gameState.timer);
+            
+            const question = gameState.questions[gameState.currentQuestion];
+            const isCorrect = answerIndex === question.correct;
+            
+            // Update score
+            if (isCorrect) {
+                gameState.score += 100;
+                document.getElementById('feedback').innerHTML = `
+                    <div style="color: var(--success);">
+                        <i class="fas fa-check-circle"></i> Correct! +100 points
+                    </div>
+                `;
+            } else {
+                document.getElementById('feedback').innerHTML = `
+                    <div style="color: var(--accent);">
+                        <i class="fas fa-times-circle"></i> Wrong! Correct answer was: ${question.options[question.correct]}
+                    </div>
+                `;
+            }
+            
+            // Update Firebase
+            if (gameState.currentRoom) {
+                await update(ref(database, 'rooms/' + gameState.currentRoom + '/players/' + gameState.user.uid + '/score'), gameState.score);
+            }
+            
+            // Disable options
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.style.pointerEvents = 'none';
+                card.style.opacity = '0.7';
+            });
+            
+            // Wait and load next question
+            setTimeout(() => {
+                gameState.currentQuestion++;
+                loadGameQuestion();
+                document.getElementById('feedback').innerHTML = '';
+            }, 2000);
+        }
+
+        function handleTimeout() {
+            document.getElementById('feedback').innerHTML = `
+                <div style="color: var(--warning);">
+                    <i class="fas fa-clock"></i> Time's up!
+                </div>
+            `;
+            
+            setTimeout(() => {
+                gameState.currentQuestion++;
+                loadGameQuestion();
+                document.getElementById('feedback').innerHTML = '';
+            }, 2000);
+        }
+
+        function endGame() {
+            // Calculate result
+            const roomPlayers = gameState.currentGame?.players || {};
+            const players = Object.values(roomPlayers);
+            const currentPlayer = players.find(p => p.uid === gameState.user.uid);
+            const opponents = players.filter(p => p.uid !== gameState.user.uid);
+            
+            let result = "Game Over!";
+            let resultColor = "white";
+            
+            if (opponents.length > 0) {
+                const opponent = opponents[0];
+                if (gameState.score > opponent.score) {
+                    result = "You Win! 🎉";
+                    resultColor = "var(--success)";
+                    updateUserStats('win');
+                } else if (gameState.score < opponent.score) {
+                    result = "You Lose 😢";
+                    resultColor = "var(--accent)";
+                    updateUserStats('loss');
+                } else {
+                    result = "Draw! 🤝";
+                    resultColor = "var(--warning)";
+                    updateUserStats('draw');
+                }
+            }
+            
+            // Show result
+            document.getElementById('questionText').textContent = result;
+            document.getElementById('questionText').style.color = resultColor;
+            document.getElementById('questionText').style.fontSize = "2rem";
+            document.getElementById('questionText').style.fontWeight = "800";
+            
+            document.getElementById('optionsGrid').innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <div style="font-size: 1.2rem; margin-bottom: 10px;">Final Score: ${gameState.score}</div>
+                    ${opponents.length > 0 ? `<div>${opponents[0].name}: ${opponents[0].score}</div>` : ''}
+                </div>
+            `;
+            
+            // Clear room after game ends
+            setTimeout(async () => {
+                if (gameState.currentRoom) {
+                    await remove(ref(database, 'rooms/' + gameState.currentRoom));
+                    gameState.currentRoom = null;
+                    goToPage('home');
+                }
+            }, 5000);
+        }
+
+        // Update User Stats in Firebase
+        async function updateUserStats(result) {
+            if (!gameState.user) return;
+            
+            const userRef = ref(database, 'users/' + gameState.user.uid);
+            const snapshot = await get(userRef);
+            const userData = snapshot.val() || {};
+            
+            const updates = {};
+            if (result === 'win') {
+                updates.wins = (userData.wins || 0) + 1;
+                updates.xp = (userData.xp || 0) + 100;
+            } else if (result === 'loss') {
+                updates.losses = (userData.losses || 0) + 1;
+                updates.xp = (userData.xp || 0) + 20;
+            } else {
+                updates.draws = (userData.draws || 0) + 1;
+                updates.xp = (userData.xp || 0) + 50;
+            }
+            
+            // Update level based on XP
+            const newXP = updates.xp || userData.xp || 0;
+            updates.level = Math.floor(newXP / 1000) + 1;
+            
+            // Update rank
+            if (newXP >= 5000) updates.rank = 'Platinum';
+            else if (newXP >= 2000) updates.rank = 'Gold';
+            else if (newXP >= 1000) updates.rank = 'Silver';
+            else updates.rank = 'Bronze';
+            
+            await update(userRef, updates);
+        }
+
+        // Single Player Game
+        async function startSinglePlayer(difficulty) {
+            const questionCount = difficulty === 'easy' ? 10 : difficulty === 'medium' ? 15 : 20;
+            const questions = await generateAIQuestions(questionCount, difficulty);
+            
+            gameState.questions = questions;
+            gameState.currentQuestion = 0;
+            gameState.score = 0;
+            
+            // For single player, create a virtual opponent
+            document.getElementById('player2Name').textContent = 'AI Opponent';
+            
+            goToPage('game');
+            loadGameQuestion();
+        }
+
+        // Update Active Rooms List
+        function updateActiveRooms() {
+            const roomsRef = ref(database, 'rooms');
+            onValue(roomsRef, (snapshot) => {
+                const rooms = snapshot.val() || {};
+                const container = document.getElementById('roomsList');
+                container.innerHTML = '';
+                
+                Object.entries(rooms).forEach(([code, room]) => {
+                    if (room.status === 'waiting') {
+                        const playerCount = Object.keys(room.players || {}).length;
+                        const roomElement = document.createElement('div');
+                        roomElement.className = 'player-item';
+                        roomElement.style.marginBottom = '8px';
+                        roomElement.innerHTML = `
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">Room: ${code}</div>
+                                <div style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+                                    ${playerCount}/4 players • Host: ${room.players[room.host]?.name || 'Unknown'}
+                                </div>
+                            </div>
+                            <button onclick="joinRoomByCode('${code}')" style="padding: 8px 16px; background: var(--primary); border: none; border-radius: 8px; color: white;">
+                                Join
+                            </button>
+                        `;
+                        container.appendChild(roomElement);
+                    }
+                });
+            });
+        }
+
+        // Helper function for joining room from list
+        window.joinRoomByCode = function(code) {
+            document.getElementById('roomCodeInput').value = code;
+            joinRoom();
+        };
+
+        // Make functions available globally
+        window.signInWithGoogle = signInWithGoogle;
+        window.signInAnonymously = signInAnonymously;
+        window.logout = logout;
+        window.goToPage = goToPage;
+        window.createRoom = createRoom;
+        window.joinRoom = joinRoom;
+        window.leaveRoom = leaveRoom;
+        window.startGame = startGame;
+        window.startSinglePlayer = startSinglePlayer;
+
+    </script>
+</body>
+</html>
